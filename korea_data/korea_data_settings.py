@@ -3,7 +3,20 @@ from datetime import datetime, timedelta
 
 
 # List of specific Korean Stock Exchange holidays in YYYY-MM-DD format.
-korean_holidays = ['2023-01-23',
+korean_holidays = ['2022-01-31',
+                    '2022-02-01',
+                    '2022-02-02',
+                    '2022-03-01',
+                    '2022-03-09',
+                    '2022-05-05',
+                    '2022-06-01',
+                    '2022-06-06',
+                    '2022-08-15',
+                    '2022-09-09',
+                    '2022-09-12',
+                    '2022-10-03',
+                    '2022-10-09',
+                   '2023-01-23',
                    '2023-01-24',
                    '2023-03-01',
                    '2023-05-01',
@@ -46,16 +59,14 @@ def latest_korea_stock_date():
 
     return date.strftime('%Y%m%d')
 
-
-
 # List of dates to exclude in 'yyyymmdd' format (e.g. '20200101')
 
-def subtract_korea_stock_date(date_str, days_to_subtract):
+def subtract_korea_stock_date(date_str, subtract_days):
     # Convert input date from 'yyyymmdd' format to datetime object
     date = datetime.strptime(date_str, '%Y%m%d')
 
     # Create pandas date_range from 120 days ago to the input date
-    dates = pd.date_range(end=date, periods=days_to_subtract+120) #add buffer for weekends and excluded dates
+    dates = pd.date_range(end=date, periods=subtract_days+300) #add buffer for weekends and excluded dates
 
     # Convert excluded_dates to datetime objects
     excluded_dates_dt = [datetime.strptime(d, '%Y-%m-%d') for d in korean_holidays]
@@ -65,7 +76,7 @@ def subtract_korea_stock_date(date_str, days_to_subtract):
     dates = dates[dates.to_series().dt.dayofweek < 5] # 5 and 6 corresponds to Saturday and Sunday
 
     # Subtract 120 business days (excluding certain dates) from the input date
-    final_date = dates[-days_to_subtract-1]
+    final_date = dates[-subtract_days-1]
 
     return final_date.date().strftime('%Y%m%d')
 

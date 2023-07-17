@@ -1,4 +1,3 @@
-
 import json
 import requests
 import yaml
@@ -40,5 +39,4 @@ def hashkey(datas):
     res = requests.post(URL, headers=headers, data=json.dumps(datas))
     hashkey = res.json()["HASH"]
     return hashkey
-
 
