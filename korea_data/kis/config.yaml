@@ -1,0 +1,10 @@
+APP_KEY : "PSyaXJzZcoT29nlEMCh5TkJ9vvVdqVZotlX6"
+APP_SECRET : "ingcb3WRQBNVApTEm/lxDxHtLM4qO78vhO9tNrq8+4OVQJAOpkDavmMRsi8CusZLMv3N33kOgjTwGWT+NgANAsHt2fNuBCzwZ3CoaDEnf1XH40qDpxk8h8wYA4/WZERvRXhTyZym0kQsz0+dUoAyoAd6N0w6eFcMzHapdOW6I+Jtu2MzXoo="
+
+#계좌번호 앞 8자리
+CANO : 50083358
+#계좌번호 뒤 2자리
+ACNT_PRDT_CD : 01
+
+#모의투자
+URL_BASE : "https://openapivts.koreainvestment.com:29443"
