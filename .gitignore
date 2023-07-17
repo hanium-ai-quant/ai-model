@@ -317,4 +317,4 @@ poetry.toml
 pyrightconfig.json
 
 #config.yaml
-.yaml
+*.yaml
