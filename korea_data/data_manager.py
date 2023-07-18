@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 import kis_api as kis
 import korea_data_settings as ks
+from datetime import datetime
 COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
 COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -48,7 +49,7 @@ def load_data_from_chart(code):
 
     from_101 = ks.subtract_korea_stock_date(ks.latest_korea_stock_date(), 100)
 
-    from_101_200 = kis.get_chart_price(period=100, end_date=from_101)
+    from_101_200 = kis.get_chart_price(code, period=100, end_date=from_101)
     from_today_100 = kis.get_chart_price(code, period=100, end_date=ks.latest_korea_stock_date())
 
     from_today_200 = pd.concat([from_today_100, from_101_200],ignore_index=True)
@@ -60,4 +61,10 @@ def load_data_from_chart(code):
 
     chart_data = from_today_200[COLUMNS_CHART_DATA]
     training_data = from_today_200[COLUMNS_TRAINING_DATA_FROM_CHART]
-    training_data.to_csv('training_data1.csv')
+    training_data = training_data.dropna()
+    training_data = training_data.reset_index(drop=True)
+    update_date = datetime.today().strftime('%Y%m%d')
+    training_data.to_csv(f'stockfeatures_{code}_{update_date}.csv')
+
+
+load_data_from_chart('005930')

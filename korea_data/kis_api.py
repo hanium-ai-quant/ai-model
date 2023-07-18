@@ -47,5 +47,4 @@ def get_chart_price(code="005930", period=100, end_date="20201030") :
             df = df._append(temp_df, ignore_index=True)
     return df
 
-def get_per_
 
