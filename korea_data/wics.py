@@ -69,7 +69,6 @@ sector_code = [
 sector_code_dict = {}
 for i in range(len(sector_code)):
     sector_code_dict[sector_code[i]] = sector_code_name[i]
-print(sector_code_dict)
 
 data_sector = []
 biz_day = ks.latest_korea_stock_date()
@@ -80,7 +79,7 @@ for i in tqdm(sector_code):
 
     data_sector.append(data_pd)
 
-    time.sleep(1)
+    time.sleep(0.5)
 
 kor_sector = pd.concat(data_sector, axis=0)
 kor_sector = kor_sector[['IDX_CD', 'CMP_CD', 'CMP_KOR']]
@@ -96,6 +95,7 @@ con = pymysql.connect(user='root',
                       charset='utf8')
 
 cursor = con.cursor()
+
 query = f"""
     insert into kor_sector (IDX_CD, CMP_CD, CMP_KOR, SEC_NM_KOR, 기준일)
     values (%s,%s,%s,%s,%s) as new

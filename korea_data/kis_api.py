@@ -1,6 +1,7 @@
 from kis_auth import *
 import korea_data_settings as ks
 import pandas as pd
+
 #데이터에 접근하기 위해 토큰 발급
 ACCESS_TOKEN = auth()
 
@@ -22,7 +23,6 @@ def get_chart_price(code="005930", period=100, end_date="20201030") :
         "fid_org_adj_prc": "0",
     }
     res = requests.get(URL, headers=headers, params=params)
-
     df = pd.DataFrame(columns = ['date','open','high','low','close','volume'])
 
     for i in range(0, len(res.json()['output2'])):

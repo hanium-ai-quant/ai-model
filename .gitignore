@@ -316,5 +316,5 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-#config.yaml
+#config_kis.yaml
 *.yaml

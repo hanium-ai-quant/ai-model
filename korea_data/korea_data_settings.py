@@ -59,6 +59,32 @@ def latest_korea_stock_date():
 
     return date.strftime('%Y%m%d')
 
+# Iterate back from today's date to find the latest non-holiday weekday
+def latest_korea_stock_date_today():
+    date = datetime.today()
+
+    # Convert the dates from string to datetime objects
+    korean_holidays_dates = [datetime.strptime(day, '%Y-%m-%d') for day in korean_holidays]
+
+    # Go back day by day until we find a date that is not a holiday or weekend
+    while True:
+        # Ignore the time component
+        date = date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        # Check if the date is a holiday
+        if date in korean_holidays_dates:
+            date = date - timedelta(days=1)
+            continue
+
+        # Check if the date is a weekend
+        if date.weekday() >= 5:  # 0 is Monday, 1 is Tuesday, ..., 5 is Saturday, 6 is Sunday
+            date = date - timedelta(days=1)
+            continue
+
+        # If the date is not a holiday or weekend, we are done
+        break
+
+    return date.strftime('%Y%m%d')
 # List of dates to exclude in 'yyyymmdd' format (e.g. '20200101')
 
 def subtract_korea_stock_date(date_str, subtract_days):
@@ -79,6 +105,7 @@ def subtract_korea_stock_date(date_str, subtract_days):
     final_date = dates[-subtract_days-1]
 
     return final_date.date().strftime('%Y%m%d')
+
 
 
 

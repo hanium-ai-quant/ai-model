@@ -4,6 +4,7 @@ from tqdm import tqdm
 import kis_api as kis
 import korea_data_settings as ks
 from datetime import datetime
+
 COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
 COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -66,5 +67,5 @@ def load_data_from_chart(code):
     update_date = datetime.today().strftime('%Y%m%d')
     training_data.to_csv(f'stockfeatures_{code}_{update_date}.csv')
 
-
-load_data_from_chart('005930')
+for code in tqdm(ks.korea_stock_code_list()):
+    load_data_from_chart(code)
