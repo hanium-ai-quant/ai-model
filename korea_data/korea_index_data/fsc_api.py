@@ -190,7 +190,7 @@ def get_krx_bond_index(period, end_date):
         "idxNm": "KRX 채권지수",
     }
     res = requests.get(URL, headers=headers, params=params)
-    df = pd.DataFrame(columns = ['date','총수익지수 종가','순가격지수 종가','제로재투자지수 종가','콜재투자지수 종가','시장가격지수 종가'])
+    df = pd.DataFrame(columns = ['date','totBnfIdxClpr','nPrcIdxClpr','zrRinvIdxClp','clRinvIdxClpr','mrktPrcIdxClpr '])
 
     for i in range(0, len(res.json()['response']['body']['items']['item'])):
         bas_Dt = res.json()['response']['body']['items']['item'][i]['basDt']  # 날짜
@@ -203,11 +203,11 @@ def get_krx_bond_index(period, end_date):
         # Create a temporary DataFrame with the current data
             temp_df = pd.DataFrame({
                 'date': [bas_Dt],
-                '총수익지수 종가': [totBnfIdxClpr],
-                '순가격지수 종가': [nPrcIdxClpr],
-                '제로재투자지수 종가': [zrRinvIdxClpr],
-                '콜재투자지수 종가': [clRinvIdxClpr],
-                '시장가격지수 종가': [mrktPrcIdxClpr],
+                'totBnfIdxClpr': [totBnfIdxClpr],
+                'nPrcIdxClpr': [nPrcIdxClpr],
+                'zrRinvIdxClpr': [zrRinvIdxClpr],
+                'clRinvIdxClpr': [clRinvIdxClpr],
+                'mrktPrcIdxClpr': [mrktPrcIdxClpr],
             })
 
         # Append the temporary DataFrame to the main DataFrame
