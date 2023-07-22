@@ -4,7 +4,7 @@ import requests as rq
 import pandas as pd
 from tqdm import tqdm
 import pymysql
-import korea_data_settings as ks
+import korea_data.korea_data_settings as ks
 
 sector_code_name=[
     '에너지',

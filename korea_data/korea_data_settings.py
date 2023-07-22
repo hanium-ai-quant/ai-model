@@ -57,11 +57,32 @@ def latest_korea_stock_date():
         # If the date is not a holiday or weekend, we are done
         break
 
-    return date.strftime('%Y%m%d')
+    date = date.strftime('%Y%m%d')
+    return date
 
 # Iterate back from today's date to find the latest non-holiday weekday
-def latest_korea_stock_date_today():
-    date = datetime.today()
+
+def subtract_korea_stock_date(date_str, subtract_days):
+    # Convert input date from 'yyyymmdd' format to datetime object
+    date = datetime.strptime(date_str, '%Y%m%d')
+
+    # Create pandas date_range from 120 days ago to the input date
+    dates = pd.date_range(end=date, periods=subtract_days+300) #add buffer for weekends and excluded dates
+
+    # Convert excluded_dates to datetime objects
+    excluded_dates_dt = [datetime.strptime(d, '%Y-%m-%d') for d in korean_holidays]
+
+    # Filter out weekends and excluded dates
+    dates = dates[~dates.isin(excluded_dates_dt)]
+    dates = dates[dates.to_series().dt.dayofweek < 5] # 5 and 6 corresponds to Saturday and Sunday
+
+    # Subtract 120 business days (excluding certain dates) from the input date
+    final_date = dates[-subtract_days-1]
+
+    return final_date.date().strftime('%Y%m%d')
+
+def latest_korea_stock_date_nextday():
+    date = datetime.today() - timedelta(days=1)
 
     # Convert the dates from string to datetime objects
     korean_holidays_dates = [datetime.strptime(day, '%Y-%m-%d') for day in korean_holidays]
@@ -84,28 +105,9 @@ def latest_korea_stock_date_today():
         # If the date is not a holiday or weekend, we are done
         break
 
-    return date.strftime('%Y%m%d')
-# List of dates to exclude in 'yyyymmdd' format (e.g. '20200101')
-
-def subtract_korea_stock_date(date_str, subtract_days):
-    # Convert input date from 'yyyymmdd' format to datetime object
-    date = datetime.strptime(date_str, '%Y%m%d')
-
-    # Create pandas date_range from 120 days ago to the input date
-    dates = pd.date_range(end=date, periods=subtract_days+300) #add buffer for weekends and excluded dates
-
-    # Convert excluded_dates to datetime objects
-    excluded_dates_dt = [datetime.strptime(d, '%Y-%m-%d') for d in korean_holidays]
-
-    # Filter out weekends and excluded dates
-    dates = dates[~dates.isin(excluded_dates_dt)]
-    dates = dates[dates.to_series().dt.dayofweek < 5] # 5 and 6 corresponds to Saturday and Sunday
-
-    # Subtract 120 business days (excluding certain dates) from the input date
-    final_date = dates[-subtract_days-1]
-
-    return final_date.date().strftime('%Y%m%d')
-
-
-
+    date = date.strftime('%Y%m%d')
+    date = datetime.strptime(date, '%Y%m%d')
+    date = date + timedelta(days=1)
+    date = date.strftime('%Y%m%d')
+    return date
 
