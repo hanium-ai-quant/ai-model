@@ -79,39 +79,40 @@ for i in tqdm(sector_code):
 
     data_sector.append(data_pd)
 
-    time.sleep(0.5)
+    time.sleep(0.2)
 
-kor_sector = pd.concat(data_sector, axis=0)
-kor_sector = kor_sector[['IDX_CD', 'CMP_CD', 'CMP_KOR']]
-kor_sector['SEC_NM_KOR'] = kor_sector['IDX_CD'].map(sector_code_dict)
-kor_sector['기준일'] = biz_day
-kor_sector['기준일'] = pd.to_datetime(kor_sector['기준일'])
+sector = pd.concat(data_sector, axis=0)
+sector = sector[['IDX_CD', 'CMP_CD', 'CMP_KOR']]
+sector['SEC_NM_KOR'] = sector['IDX_CD'].map(sector_code_dict)
+sector['기준일'] = biz_day
+sector['기준일'] = pd.to_datetime(sector['기준일'])
 
 
 con = pymysql.connect(user='root',
                       passwd='kkljjh',
                       host='localhost',
-                      db='data',
+                      db='korea_data',
                       charset='utf8')
 
 cursor = con.cursor()
 
 query = f"""
-    insert into kor_sector (IDX_CD, CMP_CD, CMP_KOR, SEC_NM_KOR, 기준일)
+    insert into sector (IDX_CD, CMP_CD, CMP_KOR, SEC_NM_KOR, 기준일)
     values (%s,%s,%s,%s,%s) as new
     on duplicate key update
     IDX_CD = new.IDX_CD, CMP_KOR = new.CMP_KOR, SEC_NM_KOR = new.SEC_NM_KOR
 """
 
-args = kor_sector.values.tolist()
+args = sector.values.tolist()
 cursor.executemany(query, args)
 con.commit()
 
 con.close()
 
 # Define the specific IDX_CD value
-specific_idx_cd = 'G2510'  # Replace 'your_value' with your specific IDX_CD value
-
+def get_code_from_sector(sector):
+    specific_idx_cd = sector  # 'G2010' for '자본재'
 # Use boolean indexing to filter the DataFrame and then get the 'CMP_CD' column
-cmp_cd_list = kor_sector[kor_sector['IDX_CD'] == specific_idx_cd]['CMP_CD'].tolist()
+    cmp_cd_list = sector[sector['IDX_CD'] == specific_idx_cd]['CMP_CD'].tolist()
+    return cmp_cd_list
 
