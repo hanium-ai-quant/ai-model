@@ -1,13 +1,160 @@
-# ai-model
-korea_data/data_manager을 실행하면 데이터를 다운로드 받을 수 있습니다.
+## 전체 데이터 설명
 
-## 데이터
-    'open_lastclose_ratio', 'high_close_ratio','low_close_ratio',
-    'close_lastclose_ratio', 'volume_lastvolume_ratio',
-    'close_ma5_ratio', 'volume_ma5_ratio',
-    'close_ma10_ratio', 'volume_ma10_ratio',
-    'close_ma20_ratio', 'volume_ma20_ratio',
-    'close_ma40_ratio', 'volume_ma40_ratio',
-    'close_ma60_ratio', 'volume_ma60_ratio',
-    'close_ma80_ratio', 'volume_ma80_ratio',
-    'close_ma100_ratio', 'volume_ma100_ratio',
+    학습시키고자 하는 데이터는 각 종목마다의 데이터인 주가 데이터, 그리고 전체 경향
+    을 나타내는 지수 데이터로 이루어져 있습니다.
+
+    korea_stock_data 폴더 안에 있는 파일들은 모두 주가 데이터를 불러오기
+    위한 파일입니다.
+    
+    korea_index_data 폴더 안에 있는 파일들은 모두 지수 데이터를 불러오기
+    위한 파일입니다.
+    
+    korea_data_settings.py는 한국의 휴장일과 주말을 제외한 날짜를 불러오기
+    위한 파일입니다.
+
+    
+### 주가 데이터(korea_stock_data 폴더 설명)
+    kis_api는 한국투자증권에서 제공하는 API를 통해 정보를 불러오는 함수로 이뤄져
+    있습니다. 
+    kis_auth는 kis_api를 사용하기 위한 인증을 받는 파일입니다.
+    korea_stock_manager는 kis_api를 통해 불러온 데이터를 저장하는 파일입니다.
+
+    https://apiportal.koreainvestment.com/login에 회원가입을 하시고
+    인증키를 받으시면 됩니다.
+    
+    korea_stock_data 폴더에
+    config_kis.yaml 파일을 만들어서
+    아래와 같이 작성해주시면 됩니다.
+
+    APP_KEY : "XXXXXXXXXX"
+    APP_SECRET : "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    #계좌번호 앞 8자리
+    CANO : XXXXXXXX
+    #계좌번호 뒤 2자리
+    ACNT_PRDT_CD : XX
+    #모의투자
+    URL_BASE : "https://openapivts.koreainvestment.com:29443"
+
+### wics 파일 설명
+    섹터별 한국 주식 종목을 스크랩하여 MySQL 데이터베이스에 저장하는 데 초점을 맞추고 있습니다. 
+    코드에는 웹 사이트에서 데이터를 가져와 데이터 프레임으로 변환한 다음 최종적으로 데이터베이스에 
+    저장하는 작업이 포함됩니다.
+
+    데이터베이스에 저장된 데이터는 다음과 같습니다.
+    - 종목코드
+    - 종목명
+    - 섹터코드
+    - 섹터이름
+    - 섹터로 지정한 날짜
+
+### kis_api 파일 설명
+    한국투자증권에서 제공하는 API를 통해 정보를 불러오는 함수로 이뤄져 있습니다. 
+물론, 다음은 코드 분석입니다.
+
+1. **가져오기:** API로 인증하는 스크립트(`kis_auth`), 한국어 데이터에 대한 일부 설정(`korea_data.korea_data_settings as ks`), 데이터 조작 및 분석에 사용되는 `pandas` 라이브러리를 포함한 일부 사용자 정의 모듈을 가져오는 것으로 시작합니다.
+
+2. **인증:** API 요청 인증에 사용되는 액세스 토큰을 검색합니다.
+
+3. **함수 `get_chart_price()`:** 이 함수는 API에서 특정 주식에 대한 일일 주가 데이터를 검색하여 pandas DataFrame으로 반환합니다.
+
+     - 함수 매개변수에는 주식 코드(`code`), `end_date`에서 데이터를 검색할 날짜 수(`period`) 및 `end_date`가 포함됩니다.
+
+     - API 요청에 필요한 URL 경로 및 헤더를 정의합니다.
+
+     - 데이터에 대한 주식 코드 및 시작 및 종료 날짜를 포함하여 API에 필요한 매개 변수를 설정합니다.
+
+     - 정의된 헤더 및 매개변수와 함께 API에 GET 요청을 보냅니다.
+
+     - ['date', 'open', 'high', 'low', 'close', 'volume'] 열이 있는 빈 DataFrame을 초기화합니다.
+
+     - API에서 반환한 데이터(`res.json()['output2']`)를 반복하면서 관련 필드를 추출하고 데이터의 각 행을 DataFrame에 추가합니다. 추출된 필드는 날짜(`stck_bsop_date`), 시가(`stck_oprc`), 고가(`stck_hgpr`), 저가(`stck_lwpr`), 종가(`stck_clpr`) 및 거래량(`acml_vol`)입니다.
+
+     - 현재 날짜 데이터가 아직 DataFrame에 없으면 현재 데이터에 대한 새로운 임시 DataFrame을 생성하여 기본 DataFrame에 추가합니다.
+
+     - 마지막으로 채워진 DataFrame을 반환합니다.
+
+이 코드를 사용하면 특정 한국 주식에 대한 과거 주가 데이터를 검색하고 pandas를 사용하여 분석할 수 있습니다. `auth()` 및 `subtract_korea_stock_date()` 함수와 필요한 API 키 및 URL에 대한 자체 구현을 제공해야 합니다.
+### korea_stock_manager 파일 설명
+이 스크립트는 주로 기계 학습을 위한 주식 데이터 처리에 중점을 둡니다. 다음은 코드 분석입니다.
+
+1. **변수 선언:** 나중에 프로그램에서 사용할 수 있도록 여러 열 이름 목록이 스크립트 상단에 선언됩니다.
+
+2. **함수 `preprocess()`:** 이 함수는 입력 데이터를 전처리하여 이동 평균 및 가격 비율과 같은 주식 거래에 사용되는 다양한 기술 지표를 생성합니다.
+
+    - 종가와 거래량 모두에 대해 서로 다른 창 크기에 대해 여러 이동 평균을 생성하여 DataFrame의 새 열에 각각 저장합니다. 그런 다음 각각의 이동 평균에 대한 종가 및 거래량의 비율을 계산하고 이를 새 열에도 저장합니다.
+   
+    - 전일 종가 대비 시가의 비율을 계산합니다.
+   
+    - 당일 종가 대비 당일 고가와 저가의 비율을 계산합니다.
+   
+    - 전일 종가 대비 종가 비율을 계산합니다.
+   
+    - 전일 거래량에 대한 거래량의 비율을 계산하여 정방향 및 역방향 채우기를 통해 분모의 0 값을 처리합니다.
+   
+3. **함수 `load_data_from_chart()`:** 이 함수는 특정 한국 주식에 대한 과거 주가 데이터를 가져와 전처리합니다.
+
+    - 가장 최근 입고일로부터 101일 전의 일자를 먼저 계산합니다.
+   
+    - 101일 전 날짜로 끝나는 기간과 가장 늦은 날짜로 끝나는 기간의 주가 데이터를 가져옵니다.
+   
+    - 이 두 데이터 프레임을 함께 연결하고 날짜별로 정렬한 다음 인덱스를 재설정합니다.
+   
+    - 그런 다음 `preprocess()` 함수를 호출하여 데이터를 전처리합니다.
+   
+    - 마지막으로 기계 학습 모델 학습에 필요한 기능을 추출하고 누락된 값이 있는 행을 제거하고 처리된 데이터를 CSV 파일에 저장합니다.
+
+이 스크립트를 사용하면 기계 학습 모델에서 사용하기 위해 특정 한국 주식에 대한 과거 주가 데이터를 검색, 전처리 및 저장할 수 있습니다. 자체 API 키, URL 및 날짜 계산 함수를 제공하고 `kis.get_chart_price()` 함수를 구현해야 합니다.
+
+    
+
+
+### 지수 데이터
+    금융위원회에서 코스피지수,코스닥지수, 코스피 200, KRX 300, KRX 채권지수,
+    10년국채선물지수, 국채 3-10년 선물지수의 데이터를 불러옵니다. 
+
+### fsc_api 파일 설명
+게시한 Python 코드는 한국 주식 시장에서 다양한 시장 지수를 수집하기 위한 일련의 함수 정의입니다. 주어진 기간과 종료 날짜에 대한 데이터를 수집하도록 설계되었습니다.
+
+다음은 각 기능에 대한 간략한 개요입니다.
+
+1. `get_kospi_index(period, end_date)`: KOSPI(한국종합주가지수) 데이터를 가져옵니다.
+
+2. `get_kosdaq_index(period, end_date)`: KOSDAQ(Korea Securities Dealers Automated Quotations) 데이터를 가져옵니다.
+
+3. `get_kospi_200_index(period, end_date)`: KOSPI 200 지수 데이터를 가져옵니다.
+
+4. `get_krx_300_index(period, end_date)`: KRX 300 지수 데이터를 가져온다.
+
+5. `get_krx_bond_index(period, end_date)`: KRX 채권 지수 데이터를 가져옵니다.
+
+6. `get_bond_k10y_future_index(period, end_date)`: 10년 국채 선물 지수 데이터를 가져옵니다.
+
+각 함수는 지정된 URL에 대한 HTTP GET 요청을 수행한 다음 아마도 JSON 형식의 응답을 처리합니다. 함수는 모두 각 인덱스에 대한 데이터를 저장하기 위해 pandas DataFrame을 생성합니다.
+
+GET 요청에 대한 URL, 헤더 및 매개변수는 각 함수에 정의되어 있으며 구성 파일에서 `SERVICE_KEY` 및 `URL_BASE`를 읽는 것으로 보입니다. 이 함수는 유틸리티 함수(`subtract_korea_stock_date`)를 사용하여 데이터 검색 시작 날짜를 계산합니다.
+
+더 자세히 이해하고 싶은 코드의 특정 부분이 있으면 알려주십시오.
+
+### korea_index_manager 파일 설명
+
+귀하의 코드는 다양한 유형의 주식 시장 지수(KOSPI, KOSDAQ, KOSPI 200, KRX 300), 채권 지수(10년 국채 선물, KRX 채권, 3-10년 국채 선물)에 대한 클래스를 생성하고 이러한 지수와 관련된 데이터를 전처리합니다.
+
+각 클래스에 대한 간략한 요약은 다음과 같습니다.
+
+1. `kospi`: 이 클래스는 시가, 고가, 저가, 종가 및 거래량과 같은 기능에 대한 이동 평균 및 비율 계산을 포함하여 KOSPI 데이터의 전처리를 담당합니다.
+
+2. `kosdaq`: `kospi` 클래스와 유사하게 KOSDAQ 데이터를 처리합니다.
+
+3. `kospi_200`: KOSPI 200 지수 데이터를 처리하는 클래스입니다.
+
+4. `krx_300`: 이 클래스는 KRX 300 지수에 대한 전처리를 관리합니다.
+
+5. `bond_k10y_future`: 이 클래스는 10년 만기 국채 선물 데이터를 전처리합니다.
+
+6. `krx_bond`: KRX 채권과 관련된 데이터를 처리하는 클래스입니다.
+
+7. `bond_k3_10y_future`: 이 클래스는 3-10년 국채 선물 데이터를 전처리하기 위한 클래스입니다.
+
+각 클래스에는 `preprocess` 및 `load_data_from_chart` 메서드가 포함됩니다. '전처리' 방법은 이동 평균 및 다양한 비율과 같은 몇 가지 새로운 기능을 계산합니다. `load_data_from_chart` 메서드는 데이터를 불러와 전처리를 수행하고 처리된 데이터를 CSV 파일로 저장합니다.
+
+이 스크립트는 시장 데이터를 가져오는 데 사용되는 `fsc_api`라는 모듈에 의존하는 것으로 보입니다. 2021년 9월 내 지식이 중단된 시점에서 `fsc_api`는 Python 커뮤니티에서 널리 인식되거나 일반적으로 사용되는 패키지가 아닙니다. 특정 프로젝트나 조직을 위해 개발된 사용자 정의 모듈일 수 있습니다. 마찬가지로 `korea_data.korea_data_settings`는 사용자 정의 모듈인 것 같습니다. 따라서 이러한 모듈에 대한 추가 세부 정보나 컨텍스트를 제공할 수 없습니다.
