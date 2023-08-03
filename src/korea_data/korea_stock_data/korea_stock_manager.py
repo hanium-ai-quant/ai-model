@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
-from korea_data.korea_stock_data import kis_api as kis
-import korea_data.korea_data_settings as ks
+from src.korea_data.korea_stock_data import kis_api
+import src.korea_data.korea_data_settings as ks
 from datetime import datetime
+import os
 
 COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
@@ -60,8 +60,8 @@ def preprocess(data):
 def load_data_from_chart(code):
     from_101 = ks.subtract_korea_stock_date(ks.latest_korea_stock_date(), 100)
 
-    from_101_200 = kis.get_chart_price(code, period=100, end_date=from_101)
-    from_today_100 = kis.get_chart_price(code, period=100, end_date=ks.latest_korea_stock_date())
+    from_101_200 = kis_api.get_chart_price(code, period=100, end_date=from_101)
+    from_today_100 = kis_api.get_chart_price(code, period=100, end_date=ks.latest_korea_stock_date())
 
     from_today_200 = pd.concat([from_today_100, from_101_200], ignore_index=True)
     from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
@@ -75,4 +75,11 @@ def load_data_from_chart(code):
     training_data = training_data.dropna()
     training_data = training_data.reset_index(drop=True)
     update_date = datetime.today().strftime('%Y%m%d')
-    training_data.to_csv(f'stockfeatures_{code}_{update_date}.csv')
+
+    if not os.path.exists(f'./../../../data/stock/{update_date}'):
+        os.makedirs(f'./../../../data/stock/{update_date}')
+        training_data.to_csv(f'./../../../data/stock/{update_date}/{code}.csv')
+
+    else:
+        training_data.to_csv(f'./../../../data/stock/{update_date}/{code}.csv')
+

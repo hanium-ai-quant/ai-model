@@ -1,13 +1,12 @@
 from kis_auth import *
-import korea_data.korea_data_settings as ks
+import src.korea_data.korea_data_settings as ks
 import pandas as pd
-
-# 데이터에 접근하기 위해 토큰 발급
-ACCESS_TOKEN = auth()
+import requests
 
 
 # 종목코드를 입력하면 종목의 일별 시세를 반환
 def get_chart_price(code="005930", period=100, end_date="20201030"):
+    ACCESS_TOKEN = auth()
     PATH = "uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
     URL = f"{URL_BASE}/{PATH}"
     headers = {"Content-Type": "application/json",
@@ -47,3 +46,6 @@ def get_chart_price(code="005930", period=100, end_date="20201030"):
             # Append the temporary DataFrame to the main DataFrame
             df = df._append(temp_df, ignore_index=True)
     return df
+
+
+print(get_chart_price())

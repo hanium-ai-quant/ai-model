@@ -1,12 +1,11 @@
 import time
-import json
 import requests as rq
 import pandas as pd
 from tqdm import tqdm
 import pymysql
-import korea_data.korea_data_settings as ks
+import src.korea_data.korea_data_settings as ks
 
-sector_code_name=[
+sector_code_name = [
     '에너지',
     '소재',
     '자본재',
@@ -87,7 +86,6 @@ sector['SEC_NM_KOR'] = sector['IDX_CD'].map(sector_code_dict)
 sector['기준일'] = biz_day
 sector['기준일'] = pd.to_datetime(sector['기준일'])
 
-
 con = pymysql.connect(user='root',
                       passwd='kkljjh',
                       host='localhost',
@@ -109,10 +107,11 @@ con.commit()
 
 con.close()
 
+
 # Define the specific IDX_CD value
-def get_code_from_sector(sector):
-    specific_idx_cd = sector  # 'G2010' for '자본재'
-# Use boolean indexing to filter the DataFrame and then get the 'CMP_CD' column
+def get_code_from_sector(my_sector_code):
+    specific_idx_cd = my_sector_code  # 'G2010' for '자본재'
+    # Use boolean indexing to filter the DataFrame and then get the 'CMP_CD' column
     cmp_cd_list = sector[sector['IDX_CD'] == specific_idx_cd]['CMP_CD'].tolist()
     return cmp_cd_list
 

@@ -1,9 +1,8 @@
 # Description: 한국 주식 시장 지수 데이터를 가져오는 모듈
 import requests
 import yaml
-import korea_data.korea_data_settings as ks
+import src.korea_data.korea_data_settings as ks
 import pandas as pd
-from datetime import timedelta
 
 with open('config_fsc.yaml', encoding='UTF-8') as f:
     _cfg = yaml.load(f, Loader=yaml.FullLoader)

@@ -7,10 +7,9 @@ import time
 import json
 import numpy as np
 from tqdm import tqdm
-from quantylab.rltrader.environment import Environment
-from quantylab.rltrader.agent import Agent
+from environment import Environment
+from agent import Agent
 from quantylab.rltrader.networks import Network, DNN, LSTMNetwork, CNN
-import Visualizer
 import utils
 import settings
 
