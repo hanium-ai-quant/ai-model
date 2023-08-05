@@ -7,7 +7,7 @@ import os
 
 
 class kospi:
-#코스피 데이터를 정제한다
+    # 코스피 데이터를 정제한다
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -33,7 +33,6 @@ class kospi:
         'volume_ma100_ratio',
     ]
 
-
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
         for window in windows:
@@ -55,12 +54,11 @@ class kospi:
         data['volume_lastvolume_ratio'] = np.zeros(len(data))
         data.loc[1:, 'volume_lastvolume_ratio'] = (
                 (data['volume'][1:].values - data['volume'][:-1].values)
-                / data['volume'][:-1].replace(to_replace=0, method='ffill')\
+                / data['volume'][:-1].replace(to_replace=0, method='ffill') \
                 .replace(to_replace=0, method='bfill').values)
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_kospi_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -73,10 +71,11 @@ class kospi:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/kospi.csv', index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/kospi.csv',index=False)
+
 
 class kosdaq:
-#코스닥 데이터를 정제한다.
+    # 코스닥 데이터를 정제한다.
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -102,7 +101,6 @@ class kosdaq:
         'volume_ma100_ratio',
     ]
 
-
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
         for window in windows:
@@ -124,12 +122,11 @@ class kosdaq:
         data['volume_lastvolume_ratio'] = np.zeros(len(data))
         data.loc[1:, 'volume_lastvolume_ratio'] = (
                 (data['volume'][1:].values - data['volume'][:-1].values)
-                / data['volume'][:-1].replace(to_replace=0, method='ffill')\
+                / data['volume'][:-1].replace(to_replace=0, method='ffill') \
                 .replace(to_replace=0, method='bfill').values)
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_kosdaq_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -143,12 +140,11 @@ class kosdaq:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/kosdaq.csv')
-
+        training_data.to_csv(f'./../data/market/{update_date}/kosdaq.csv',index=False)
 
 
 class kospi_200:
-#코스피 200 데이터를 정제한다.
+    # 코스피 200 데이터를 정제한다.
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -174,7 +170,6 @@ class kospi_200:
         'volume_ma100_ratio',
     ]
 
-
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
         for window in windows:
@@ -196,12 +191,11 @@ class kospi_200:
         data['volume_lastvolume_ratio'] = np.zeros(len(data))
         data.loc[1:, 'volume_lastvolume_ratio'] = (
                 (data['volume'][1:].values - data['volume'][:-1].values)
-                / data['volume'][:-1].replace(to_replace=0, method='ffill')\
+                / data['volume'][:-1].replace(to_replace=0, method='ffill') \
                 .replace(to_replace=0, method='bfill').values)
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_kospi_200_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -214,10 +208,11 @@ class kospi_200:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/kospi200.csv')
+        training_data.to_csv(f'./../data/market/{update_date}/kospi200.csv',index=False)
+
 
 class krx_300:
-#KRX(한국거래소)300 데이터를 정제한다.
+    # KRX(한국거래소)300 데이터를 정제한다.
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -243,7 +238,6 @@ class krx_300:
         'volume_ma100_ratio',
     ]
 
-
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
         for window in windows:
@@ -265,12 +259,11 @@ class krx_300:
         data['volume_lastvolume_ratio'] = np.zeros(len(data))
         data.loc[1:, 'volume_lastvolume_ratio'] = (
                 (data['volume'][1:].values - data['volume'][:-1].values)
-                / data['volume'][:-1].replace(to_replace=0, method='ffill')\
+                / data['volume'][:-1].replace(to_replace=0, method='ffill') \
                 .replace(to_replace=0, method='bfill').values)
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_krx_300_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -283,54 +276,54 @@ class krx_300:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/krx300.csv')
+        training_data.to_csv(f'./../data/market/{update_date}/krx300.csv',index=False)
 
 
 class krx_bond:
-    COLUMNS_CHART_DATA = ['date','totBnfIdxClpr','nPrcIdxClpr','zrRinvIdxClpr','clRinvIdxClpr','mrktPrcIdxClpr']
+    COLUMNS_CHART_DATA = ['date', 'totBnfIdxClpr', 'nPrcIdxClpr', 'zrRinvIdxClpr', 'clRinvIdxClpr', 'mrktPrcIdxClpr']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
-    'date',
-    'totBnfIdxClpr_last_ratio',
-    'nPrcIdxClpr_last_ratio',
-    'zrRinvIdxClpr_last_ratio',
-    'clRinvIdxClpr_last_ratio',
-    'mrktPrcIdxClpr_last_ratio',
-    'totBnfIdxClpr_ma5_ratio',
-    'nPrcIdxClpr_ma5_ratio',
-    'zrRinvIdxClpr_ma5_ratio',
-    'clRinvIdxClpr_ma5_ratio',
-    'mrktPrcIdxClpr_ma5_ratio',
-    'totBnfIdxClpr_ma10_ratio',
-    'nPrcIdxClpr_ma10_ratio',
-    'zrRinvIdxClpr_ma10_ratio',
-    'clRinvIdxClpr_ma10_ratio',
-    'mrktPrcIdxClpr_ma10_ratio',
-    'totBnfIdxClpr_ma20_ratio',
-    'nPrcIdxClpr_ma20_ratio',
-    'zrRinvIdxClpr_ma20_ratio',
-    'clRinvIdxClpr_ma20_ratio',
-    'mrktPrcIdxClpr_ma20_ratio',
-    'totBnfIdxClpr_ma40_ratio',
-    'nPrcIdxClpr_ma40_ratio',
-    'zrRinvIdxClpr_ma40_ratio',
-    'clRinvIdxClpr_ma40_ratio',
-    'mrktPrcIdxClpr_ma40_ratio',
-    'totBnfIdxClpr_ma60_ratio',
-    'nPrcIdxClpr_ma60_ratio',
-    'zrRinvIdxClpr_ma60_ratio',
-    'clRinvIdxClpr_ma60_ratio',
-    'mrktPrcIdxClpr_ma60_ratio',
-    'totBnfIdxClpr_ma80_ratio',
-    'nPrcIdxClpr_ma80_ratio',
-    'zrRinvIdxClpr_ma80_ratio',
-    'clRinvIdxClpr_ma80_ratio',
-    'mrktPrcIdxClpr_ma80_ratio',
-    'totBnfIdxClpr_ma100_ratio',
-    'nPrcIdxClpr_ma100_ratio',
-    'zrRinvIdxClpr_ma100_ratio',
-    'clRinvIdxClpr_ma100_ratio',
-    'mrktPrcIdxClpr_ma100_ratio',
+        'date',
+        'totBnfIdxClpr_last_ratio',
+        'nPrcIdxClpr_last_ratio',
+        'zrRinvIdxClpr_last_ratio',
+        'clRinvIdxClpr_last_ratio',
+        'mrktPrcIdxClpr_last_ratio',
+        'totBnfIdxClpr_ma5_ratio',
+        'nPrcIdxClpr_ma5_ratio',
+        'zrRinvIdxClpr_ma5_ratio',
+        'clRinvIdxClpr_ma5_ratio',
+        'mrktPrcIdxClpr_ma5_ratio',
+        'totBnfIdxClpr_ma10_ratio',
+        'nPrcIdxClpr_ma10_ratio',
+        'zrRinvIdxClpr_ma10_ratio',
+        'clRinvIdxClpr_ma10_ratio',
+        'mrktPrcIdxClpr_ma10_ratio',
+        'totBnfIdxClpr_ma20_ratio',
+        'nPrcIdxClpr_ma20_ratio',
+        'zrRinvIdxClpr_ma20_ratio',
+        'clRinvIdxClpr_ma20_ratio',
+        'mrktPrcIdxClpr_ma20_ratio',
+        'totBnfIdxClpr_ma40_ratio',
+        'nPrcIdxClpr_ma40_ratio',
+        'zrRinvIdxClpr_ma40_ratio',
+        'clRinvIdxClpr_ma40_ratio',
+        'mrktPrcIdxClpr_ma40_ratio',
+        'totBnfIdxClpr_ma60_ratio',
+        'nPrcIdxClpr_ma60_ratio',
+        'zrRinvIdxClpr_ma60_ratio',
+        'clRinvIdxClpr_ma60_ratio',
+        'mrktPrcIdxClpr_ma60_ratio',
+        'totBnfIdxClpr_ma80_ratio',
+        'nPrcIdxClpr_ma80_ratio',
+        'zrRinvIdxClpr_ma80_ratio',
+        'clRinvIdxClpr_ma80_ratio',
+        'mrktPrcIdxClpr_ma80_ratio',
+        'totBnfIdxClpr_ma100_ratio',
+        'nPrcIdxClpr_ma100_ratio',
+        'zrRinvIdxClpr_ma100_ratio',
+        'clRinvIdxClpr_ma100_ratio',
+        'mrktPrcIdxClpr_ma100_ratio',
     ]
 
     def preprocess(self, data):
@@ -371,7 +364,8 @@ class krx_bond:
 
         data['mrktPrcIdxClpr_last_ratio'] = np.zeros(len(data))
         data.loc[1:, 'mrktPrcIdxClpr_last_ratio'] = \
-            (data['mrktPrcIdxClpr'][1:].values - data['mrktPrcIdxClpr'][:-1].values) / data['mrktPrcIdxClpr'][:-1].values
+            (data['mrktPrcIdxClpr'][1:].values - data['mrktPrcIdxClpr'][:-1].values) / data['mrktPrcIdxClpr'][
+                                                                                       :-1].values
 
         return data
 
@@ -388,12 +382,11 @@ class krx_bond:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        chart_data.to_csv(f'marketdata_krx_bond_{update_date}.csv')
-        training_data.to_csv(f'./../../data/market/{update_date}/krx_bond.csv')
+        training_data.to_csv(f'./../data/market/{update_date}/krx_bond.csv', index=False)
 
 
 class bond_k10y_future:
-#국채10년물 선물 데이터를 정제한다.
+    # 국채10년물 선물 데이터를 정제한다.
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close']
     COLUMNS_TRAINING_DATA_FROM_CHART = [
         'date',
@@ -409,7 +402,6 @@ class bond_k10y_future:
         'close_ma80_ratio',
         'close_ma100_ratio',
     ]
-
 
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
@@ -430,7 +422,6 @@ class bond_k10y_future:
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_bond_k10y_future_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -443,11 +434,11 @@ class bond_k10y_future:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/bond_k10y_future.csv')
+        training_data.to_csv(f'./../data/market/{update_date}/bond_k10y_future.csv', index=False)
 
 
 class bond_k3_10y_future:
-#국채3-10년물 선물 데이터를 정제한다.
+    # 국채3-10년물 선물 데이터를 정제한다.
     COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close']
 
     COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -464,7 +455,6 @@ class bond_k3_10y_future:
         'close_ma80_ratio',
         'close_ma100_ratio',
     ]
-
 
     def preprocess(self, data):
         windows = [5, 10, 20, 40, 60, 80, 100]
@@ -485,7 +475,6 @@ class bond_k3_10y_future:
         return data
 
     def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
-
         from_today_200 = fsc.get_bond_k3_10y_future_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -498,8 +487,7 @@ class bond_k3_10y_future:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../../data/market/{update_date}/bond_k3_10y_future.csv')
-
+        training_data.to_csv(f'./../data/market/{update_date}/bond_k3_10y_future.csv', index=False)
 
 
 spi = kospi()
@@ -510,22 +498,22 @@ krxbond = krx_bond()
 bondk10yfuture = bond_k10y_future()
 bondk310yfuture = bond_k3_10y_future()
 
-update_date = datetime.today().strftime('%Y%m%d')
 
+def load_data_from_index():
+    update_date = datetime.today().strftime('%Y%m%d')
 
-if not os.path.exists(f'./../../data/market/{update_date}/'):
-    os.makedirs(f'./../../data/market/{update_date}/')
-    spi.load_data_from_chart()
+    if not os.path.exists(f'./../data/market/{update_date}/'):
+        os.makedirs(f'./../data/market/{update_date}/')
+        spi.load_data_from_chart()
 
-else:
-    spi.load_data_from_chart()
+    else:
+        spi.load_data_from_chart()
 
-daq.load_data_from_chart()
-kospi200.load_data_from_chart()
-krx300.load_data_from_chart()
-krxbond.load_data_from_chart()
-bondk10yfuture.load_data_from_chart()
-bondk310yfuture.load_data_from_chart()
-
+    daq.load_data_from_chart()
+    kospi200.load_data_from_chart()
+    krx300.load_data_from_chart()
+    krxbond.load_data_from_chart()
+    bondk10yfuture.load_data_from_chart()
+    bondk310yfuture.load_data_from_chart()
 
 
