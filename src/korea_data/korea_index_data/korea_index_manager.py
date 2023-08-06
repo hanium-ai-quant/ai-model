@@ -4,7 +4,7 @@ import fsc_api as fsc
 import src.korea_data.korea_data_settings as ks
 from datetime import datetime
 import os
-
+from tqdm import tqdm
 
 class kospi:
     # 코스피 데이터를 정제한다
@@ -71,7 +71,7 @@ class kospi:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/kospi.csv',index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/kospi.csv', index=False)
 
 
 class kosdaq:
@@ -140,7 +140,7 @@ class kosdaq:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/kosdaq.csv',index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/kosdaq.csv', index=False)
 
 
 class kospi_200:
@@ -208,7 +208,7 @@ class kospi_200:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/kospi200.csv',index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/kospi200.csv', index=False)
 
 
 class krx_300:
@@ -276,7 +276,7 @@ class krx_300:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/krx300.csv',index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/krx300.csv', index=False)
 
 
 class krx_bond:
@@ -382,7 +382,7 @@ class krx_bond:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/krx_bond.csv', index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/krxbond.csv', index=False)
 
 
 class bond_k10y_future:
@@ -434,7 +434,7 @@ class bond_k10y_future:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/bond_k10y_future.csv', index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/bondk10yfuture.csv', index=False)
 
 
 class bond_k3_10y_future:
@@ -487,7 +487,7 @@ class bond_k3_10y_future:
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
         update_date = datetime.today().strftime('%Y%m%d')
-        training_data.to_csv(f'./../data/market/{update_date}/bond_k3_10y_future.csv', index=False)
+        training_data.to_csv(f'./../data/market/{update_date}/bondk310yfuture.csv', index=False)
 
 
 spi = kospi()
@@ -509,11 +509,14 @@ def load_data_from_index():
     else:
         spi.load_data_from_chart()
 
-    daq.load_data_from_chart()
-    kospi200.load_data_from_chart()
-    krx300.load_data_from_chart()
-    krxbond.load_data_from_chart()
-    bondk10yfuture.load_data_from_chart()
-    bondk310yfuture.load_data_from_chart()
+    functions = [
+        daq.load_data_from_chart,
+        kospi200.load_data_from_chart,
+        krx300.load_data_from_chart,
+        krxbond.load_data_from_chart,
+        bondk10yfuture.load_data_from_chart,
+        bondk310yfuture.load_data_from_chart
+    ]
 
-
+    for function in tqdm(functions, desc="Loading data from index", unit="dataset"):
+        function()
