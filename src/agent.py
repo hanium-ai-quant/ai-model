@@ -1,5 +1,5 @@
 import numpy as np
-from quantylab.rltrader import utils
+import utils
 
 
 class Agent:
@@ -183,3 +183,5 @@ class Agent:
         self.portfolio_value = self.balance + curr_price * self.num_stocks
         self.profitloss = self.portfolio_value / self.initial_balance - 1
         return self.profitloss
+
+

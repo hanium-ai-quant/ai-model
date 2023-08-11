@@ -60,10 +60,14 @@ def preprocess(data):
     data.loc[1:, 'close_lastclose_ratio'] = \
         (data['close'][1:].values - data['close'][:-1].values) / data['close'][:-1].values
     data['volume_lastvolume_ratio'] = np.zeros(len(data))
-    data.loc[1:, 'volume_lastvolume_ratio'] = (
+
+    try:
+        data.loc[1:, 'volume_lastvolume_ratio'] = (
             (data['volume'][1:].values - data['volume'][:-1].values)
-            / data['volume'][:-1].replace(to_replace=0, method='ffill') \
+            / data['volume'][:-1].replace(to_replace=0, method='ffill')
             .replace(to_replace=0, method='bfill').values)
+    except ZeroDivisionError:
+        data['volume_lastvolume_ratio'] = 0
 
     return data
 
@@ -87,6 +91,8 @@ def load_data_from_chart(code):
     from_today_200 = preprocess(from_today_200)
 
     chart_data = from_today_200[COLUMNS_CHART_DATA]
+    chart_data['date'] = chart_data['date'].apply(lambda x: x.strftime('%Y%m%d'))
+    pd.options.mode.chained_assignment = None
     training_data = from_today_200[COLUMNS_TRAINING_DATA_FROM_CHART]
     training_data = training_data.dropna()
     training_data = training_data.reset_index(drop=True)
@@ -98,3 +104,5 @@ def load_data_from_chart(code):
 
     else:
         training_data.to_csv(f'./../data/stock/{update_date}/{code}.csv')
+
+    return chart_data

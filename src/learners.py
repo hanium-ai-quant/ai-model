@@ -9,10 +9,10 @@ import numpy as np
 from tqdm import tqdm
 from environment import Environment
 from agent import Agent
-from quantylab.rltrader.networks import Network, DNN, LSTMNetwork, CNN
+from networks_pytorch import Network, DNN, LSTMNetwork, CNN
 import utils
 import settings
-
+from visualizer import Visualizer
 
 logger = logging.getLogger(settings.LOGGER_NAME)
 

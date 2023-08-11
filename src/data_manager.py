@@ -4,6 +4,8 @@ import pandas as pd
 from datetime import datetime
 import yaml
 import os
+from sklearn.preprocessing import RobustScaler
+from joblib import dump, load
 
 sys.path.append('./korea_data/korea_stock_data/')
 sys.path.append('./korea_data/korea_index_data/')
@@ -13,7 +15,6 @@ from korea_data.korea_stock_data import korea_stock_manager as ksm
 from korea_data.korea_index_data import korea_index_manager as kim
 
 COLUMNS_TRAINING_DATA = [
-    'date',
     'open_lastclose_ratio',
     'high_close_ratio',
     'low_close_ratio',
@@ -174,20 +175,10 @@ COLUMNS_TRAINING_DATA = [
 ]
 
 
-def load_code_from_sector(sector_code):
-    wics.wics_to_db()
-    code_list = wics.get_code_from_sector(sector_code)
-    return code_list
-
-
-def load_data(code):
-    update_date = datetime.now().strftime('%Y%m%d')
-
-    ksm.load_data_from_chart(code)
-    market_dir = f'./../data/market/{update_date}'
-
+def save_market_features():
     kim.load_data_from_index()
-
+    update_date = datetime.now().strftime('%Y%m%d')
+    market_dir = f'./../data/market/{update_date}'
     market_files = [f for f in os.listdir(market_dir) if f.endswith('.csv')]
     df_marketfeatures = None
 
@@ -201,31 +192,94 @@ def load_data(code):
         else:
             df_marketfeatures = pd.merge(df_marketfeatures, df_marketfeature, on='date', how='left')
 
-    return df_marketfeatures
+    df_marketfeatures = df_marketfeatures.fillna(0)
+    df_marketfeatures.to_csv(f'./../data/market/{update_date}.csv')
 
 
-def load_data_from_file(code):
+def save_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
+
+    ksm.load_data_from_chart(code)
+
     df_stockfeatures = pd.read_csv(f'./../data/stock/{update_date}/{code}.csv')
 
-    df_marketfeatures = load_data(code)
+    df_marketfeatures = pd.read_csv(f'./../data/market/{update_date}.csv')
 
     df = pd.merge(df_stockfeatures, df_marketfeatures, on='date', how='left')
     df = df.reset_index(drop=True)
-    df.to_csv(f'./../data/{update_date}_{code}.csv')
+    df.drop(columns=['Unnamed: 0_x', 'Unnamed: 0_y'], errors='ignore', inplace=True)
+    df = df.fillna(0)
+    if not os.path.exists(f'./../data/{update_date}/'):
+        os.makedirs(f'./../data/{update_date}/')
+    df.to_csv(f'./../data/{update_date}/{code}.csv')
     training_data = df[COLUMNS_TRAINING_DATA].values
     return training_data
 
 
-def data_manager_from_code(code):
-    functions = [load_data, load_data_from_file]
-    for function in tqdm(functions):
-        function(code)
+def load_data(code):
+    update_date = datetime.now().strftime('%Y%m%d')
+    df = pd.read_csv(f'./../data/{update_date}/{code}.csv')
+    training_data = df[COLUMNS_TRAINING_DATA].values
+    scaler_path = os.path.join(f'./../data/{update_date}/', f'{code}_scaler.joblib')
+    scaler = None
+    if not os.path.exists(scaler_path):
+        scaler = RobustScaler()
+        scaler.fit(training_data)
+        dump(scaler, scaler_path)
+    else:
+        scaler = load(scaler_path)
+    training_data = scaler.transform(training_data)
+    chart_data = ksm.load_data_from_chart(code)
+    return chart_data, training_data
 
 
-def data_manager_from_sector(sector_code):
-    code_list = load_code_from_sector(sector_code)
-    for code in tqdm(code_list):
-        data_manager_from_code(code)
+def data_from_sector(sector_code):
+    code_list = wics.get_code_from_sector(sector_code)
+    update_date = datetime.now().strftime('%Y%m%d')
+    for code in code_list:
+        if not os.path.exists(f'./../data/{update_date}/{code}.csv'):
+            save_data(code)
+            load_data(code)
+        else:
+            print(f'{code} file already exists')
+            load_data(code)
 
-data_manager_from_sector('G2010')
+
+def data_manager(code):
+    update_date = datetime.now().strftime('%Y%m%d')
+    if not os.path.exists(f'./../data/{update_date}/{code}.csv'):
+        save_data(code)
+        load_data(code)
+    else:
+        load_data(code)
+
+
+sector_code_list = [
+    'G1010',
+    'G1510',
+    'G2010',
+    'G2020',
+    'G2030',
+    'G2510',
+    'G2520',
+    'G2530',
+    'G2550',
+    'G2560',
+    'G3010',
+    'G3020',
+    'G3030',
+    'G3510',
+    'G3520',
+    'G4010',
+    'G4020',
+    'G4030',
+    'G4040',
+    'G4050',
+    'G4510',
+    'G4520',
+    'G4530',
+    'G4540',
+    'G5010',
+    'G5020',
+    'G5510',
+]

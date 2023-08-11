@@ -89,7 +89,7 @@ def wics_to_db():
     sector['기준일'] = pd.to_datetime(sector['기준일'])
 
     con = pymysql.connect(user='root',
-                          passwd='kkljjh',
+                          password='kkljjh',
                           host='localhost',
                           db='korea_data',
                           charset='utf8')
@@ -113,7 +113,7 @@ def wics_to_db():
 # Define the specific IDX_CD value
 def get_code_from_sector(my_sector_code):
     conn = pymysql.connect(user='root',
-                           passwd='kkljjh',
+                           password='kkljjh',
                            host='localhost',
                            db='korea_data',
                            charset='utf8')

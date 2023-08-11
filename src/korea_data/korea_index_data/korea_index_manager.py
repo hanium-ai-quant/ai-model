@@ -58,7 +58,7 @@ class kospi:
                 .replace(to_replace=0, method='bfill').values)
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_kospi_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -126,7 +126,7 @@ class kosdaq:
                 .replace(to_replace=0, method='bfill').values)
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_kosdaq_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -195,7 +195,7 @@ class kospi_200:
                 .replace(to_replace=0, method='bfill').values)
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_kospi_200_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -263,7 +263,7 @@ class krx_300:
                 .replace(to_replace=0, method='bfill').values)
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_krx_300_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -369,7 +369,7 @@ class krx_bond:
 
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_krx_bond_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -421,7 +421,7 @@ class bond_k10y_future:
 
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_bond_k10y_future_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)
@@ -474,7 +474,7 @@ class bond_k3_10y_future:
 
         return data
 
-    def load_data_from_chart(self, period=200, end_date=ks.latest_korea_stock_date_nextday()):
+    def load_data_from_chart(self, period=201, end_date=ks.latest_korea_stock_date_nextday()):
         from_today_200 = fsc.get_bond_k3_10y_future_index(period=period, end_date=end_date)
         from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
         from_today_200 = from_today_200.sort_values(by='date', ascending=True)

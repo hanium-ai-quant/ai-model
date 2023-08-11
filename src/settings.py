@@ -2,14 +2,13 @@ import os
 import locale
 import platform
 
-
 # 로거 이름
 LOGGER_NAME = 'ai_quant'
 
 # 경로 설정
 BASE_DIR = os.environ.get('BASE DIRECTORY',
-    os.path.abspath(os.path.join(__file__, os.path.pardir, os.path.pardir, os.path.pardir, os.path.pardir)))
-
+                          os.path.abspath(
+                              os.path.join(__file__, os.path.pardir, os.path.pardir, os.path.pardir, os.path.pardir)))
 
 # 로케일 설정
 if 'Linux' in platform.system() or 'Darwin' in platform.system():

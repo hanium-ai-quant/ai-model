@@ -111,3 +111,6 @@ def latest_korea_stock_date_nextday():
     date = date.strftime('%Y%m%d')
     return date
 
+print(latest_korea_stock_date())
+print(latest_korea_stock_date_nextday())
+print(subtract_korea_stock_date(latest_korea_stock_date(), 100))
