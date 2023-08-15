@@ -66,7 +66,6 @@ class kospi:
         spi = kospi()
         from_today_200 = spi.preprocess(from_today_200)
 
-        chart_data = from_today_200[kospi.COLUMNS_CHART_DATA]
         training_data = from_today_200[kospi.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -135,7 +134,6 @@ class kosdaq:
         daq = kosdaq()
         from_today_200 = daq.preprocess(from_today_200)
 
-        chart_data = from_today_200[kosdaq.COLUMNS_CHART_DATA]
         training_data = from_today_200[kosdaq.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -203,7 +201,6 @@ class kospi_200:
         kospi200 = kospi_200()
         from_today_200 = kospi200.preprocess(from_today_200)
 
-        chart_data = from_today_200[kospi_200.COLUMNS_CHART_DATA]
         training_data = from_today_200[kospi_200.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -271,7 +268,6 @@ class krx_300:
         krx300 = krx_300()
         from_today_200 = krx300.preprocess(from_today_200)
 
-        chart_data = from_today_200[krx_300.COLUMNS_CHART_DATA]
         training_data = from_today_200[krx_300.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -377,7 +373,6 @@ class krx_bond:
         krxbond = krx_bond()
         from_today_200 = krxbond.preprocess(from_today_200)
 
-        chart_data = from_today_200[krx_bond.COLUMNS_CHART_DATA]
         training_data = from_today_200[krx_bond.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -429,7 +424,6 @@ class bond_k10y_future:
         bondk10yfuture = bond_k10y_future()
         from_today_200 = bondk10yfuture.preprocess(from_today_200)
 
-        chart_data = from_today_200[bond_k10y_future.COLUMNS_CHART_DATA]
         training_data = from_today_200[bond_k10y_future.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)
@@ -482,7 +476,6 @@ class bond_k3_10y_future:
         bondk310yfuture = bond_k3_10y_future()
         from_today_200 = bondk310yfuture.preprocess(from_today_200)
 
-        chart_data = from_today_200[bond_k10y_future.COLUMNS_CHART_DATA]
         training_data = from_today_200[bond_k10y_future.COLUMNS_TRAINING_DATA_FROM_CHART]
         training_data = training_data.dropna()
         training_data = training_data.reset_index(drop=True)

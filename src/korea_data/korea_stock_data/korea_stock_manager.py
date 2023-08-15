@@ -83,26 +83,33 @@ def load_data_from_chart(code):
     if from_today_100 is None:
         return None
 
+
     from_today_200 = pd.concat([from_today_100, from_101_200], ignore_index=True)
     from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
     from_today_200 = from_today_200.sort_values(by='date', ascending=True)
     from_today_200 = from_today_200.reset_index(drop=True)
 
+    chart_data = from_today_200[COLUMNS_CHART_DATA]
+    chart_data['date'] = pd.to_datetime(chart_data['date'], format='%Y%m%d')
+    chart_data = chart_data.sort_values(by='date', ascending=True)
+    chart_data = chart_data.set_index('date')
+
     from_today_200 = preprocess(from_today_200)
 
-    chart_data = from_today_200[COLUMNS_CHART_DATA]
-    chart_data['date'] = chart_data['date'].apply(lambda x: x.strftime('%Y%m%d'))
     pd.options.mode.chained_assignment = None
     training_data = from_today_200[COLUMNS_TRAINING_DATA_FROM_CHART]
+    training_data['date'] = pd.to_datetime(training_data['date'], format='%Y%m%d')
+    training_data = training_data.sort_values(by='date', ascending=True)
+    training_data = training_data.set_index('date')
     training_data = training_data.dropna()
-    training_data = training_data.reset_index(drop=True)
+
+    df_stockfeatures = chart_data.merge(training_data, left_index=True, right_index=True, how='inner')
+
     update_date = datetime.today().strftime('%Y%m%d')
 
-    if not os.path.exists(f'./../data/stock/{update_date}'):
-        os.makedirs(f'./../data/stock/{update_date}')
-        training_data.to_csv(f'./../data/stock/{update_date}/{code}.csv')
+    if not os.path.exists(f'./../data/stock/{update_date}/'):
+        os.makedirs(f'./../data/stock/{update_date}/')
+        df_stockfeatures.to_csv(f'./../data/stock/{update_date}/{code}.csv')
 
     else:
-        training_data.to_csv(f'./../data/stock/{update_date}/{code}.csv')
-
-    return chart_data
+        df_stockfeatures.to_csv(f'./../data/stock/{update_date}/{code}.csv')

@@ -1,5 +1,4 @@
 import sys
-from tqdm import tqdm
 import pandas as pd
 from datetime import datetime
 import yaml
@@ -13,6 +12,15 @@ sys.path.append('./korea_data/korea_index_data/')
 from korea_data.korea_stock_data import wics
 from korea_data.korea_stock_data import korea_stock_manager as ksm
 from korea_data.korea_index_data import korea_index_manager as kim
+
+COLUMNS_CHART_DATA = [
+    'date',
+    'open',
+    'high',
+    'low',
+    'close',
+    'volume',
+]
 
 COLUMNS_TRAINING_DATA = [
     'open_lastclose_ratio',
@@ -182,7 +190,7 @@ def save_market_features():
     market_files = [f for f in os.listdir(market_dir) if f.endswith('.csv')]
     df_marketfeatures = None
 
-    for market_file in tqdm(market_files):
+    for market_file in market_files:
         df_marketfeature = pd.read_csv(os.path.join(market_dir, market_file))
         prefix = os.path.splitext(market_file)[0]
         df_marketfeature.columns = [prefix + '_' + col if col != 'date' else col for col in df_marketfeature.columns]
@@ -193,6 +201,8 @@ def save_market_features():
             df_marketfeatures = pd.merge(df_marketfeatures, df_marketfeature, on='date', how='left')
 
     df_marketfeatures = df_marketfeatures.fillna(0)
+    df_marketfeatures['date'] = pd.to_datetime(df_marketfeatures['date'])
+    df_marketfeatures = df_marketfeatures.set_index('date')
     df_marketfeatures.to_csv(f'./../data/market/{update_date}.csv')
 
 
@@ -200,20 +210,20 @@ def save_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
 
     ksm.load_data_from_chart(code)
-
     df_stockfeatures = pd.read_csv(f'./../data/stock/{update_date}/{code}.csv')
+    df_stockfeatures['date'] = pd.to_datetime(df_stockfeatures['date'])
 
+    if not os.path.exists(f'./../data/market/{update_date}.csv'):
+        save_market_features()
     df_marketfeatures = pd.read_csv(f'./../data/market/{update_date}.csv')
-
-    df = pd.merge(df_stockfeatures, df_marketfeatures, on='date', how='left')
+    df_marketfeatures['date'] = pd.to_datetime(df_marketfeatures['date'])
+    df = pd.merge(df_stockfeatures, df_marketfeatures, on='date', how='inner')
     df = df.reset_index(drop=True)
-    df.drop(columns=['Unnamed: 0_x', 'Unnamed: 0_y'], errors='ignore', inplace=True)
+    df.drop(columns=['Unnamed: 0_x', 'Unnamed: 0_y', 'Unnamed: 0'], errors='ignore', inplace=True)
     df = df.fillna(0)
     if not os.path.exists(f'./../data/{update_date}/'):
         os.makedirs(f'./../data/{update_date}/')
-    df.to_csv(f'./../data/{update_date}/{code}.csv')
-    training_data = df[COLUMNS_TRAINING_DATA].values
-    return training_data
+    df.to_csv(f'./../data/{update_date}/{code}.csv',index=False)
 
 
 def load_data(code):
@@ -229,7 +239,8 @@ def load_data(code):
     else:
         scaler = load(scaler_path)
     training_data = scaler.transform(training_data)
-    chart_data = ksm.load_data_from_chart(code)
+
+    chart_data = df[COLUMNS_CHART_DATA]
     return chart_data, training_data
 
 
@@ -249,9 +260,16 @@ def data_manager(code):
     update_date = datetime.now().strftime('%Y%m%d')
     if not os.path.exists(f'./../data/{update_date}/{code}.csv'):
         save_data(code)
-        load_data(code)
+        chart_data, training_data = load_data(code)
+        return chart_data, training_data
     else:
-        load_data(code)
+        chart_data, training_data = load_data(code)
+        return chart_data, training_data
+
+
+def code_from_sector(sector_code):
+    code_list = wics.get_code_from_sector(sector_code)
+    return code_list
 
 
 sector_code_list = [

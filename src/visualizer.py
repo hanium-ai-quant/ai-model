@@ -69,10 +69,6 @@ class Visualizer:
             pvs_base = np.zeros(len(actions)) + initial_balance
 
             # 차트 2. 에이전트 상태 (행동, 보유 주식 수)
-            for action, color in zip(action_list, self.COLORS):
-                for i in self.x[actions == action]:
-                    # 배경 색으로 행동 표시
-                    self.axes[1].axvline(i, color=color, alpha=0.1)
             self.axes[1].plot(self.x, num_stocks, '-k')  # 보유 주식 수 그리기
 
             # 차트 3. 가치 신경망
