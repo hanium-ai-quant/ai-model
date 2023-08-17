@@ -9,7 +9,6 @@ import kis_api
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import korea_data_settings as kds
 
-
 COLUMNS_CHART_DATA = ['date', 'open', 'high', 'low', 'close', 'volume']
 
 COLUMNS_TRAINING_DATA_FROM_CHART = [
@@ -42,8 +41,8 @@ def preprocess(data):
         data[f'close_ma{window}'] = data['close'].rolling(window).mean()
         data[f'volume_ma{window}'] = data['volume'].rolling(window).mean()
 
-        data[f'volume_ma{window}'] = data[f'volume_ma{window}']\
-            .replace(to_replace=0, method='ffill')\
+        data[f'volume_ma{window}'] = data[f'volume_ma{window}'] \
+            .replace(to_replace=0, method='ffill') \
             .replace(to_replace=0, method='bfill')
 
         data[f'close_ma{window}_ratio'] = \
@@ -63,9 +62,9 @@ def preprocess(data):
 
     try:
         data.loc[1:, 'volume_lastvolume_ratio'] = (
-            (data['volume'][1:].values - data['volume'][:-1].values)
-            / data['volume'][:-1].replace(to_replace=0, method='ffill')
-            .replace(to_replace=0, method='bfill').values)
+                (data['volume'][1:].values - data['volume'][:-1].values)
+                / data['volume'][:-1].replace(to_replace=0, method='ffill')
+                .replace(to_replace=0, method='bfill').values)
     except ZeroDivisionError:
         data['volume_lastvolume_ratio'] = 0
 
@@ -77,12 +76,11 @@ def load_data_from_chart(code):
 
     from_101_200 = kis_api.get_chart_price(code, period=100, end_date=from_101)
     if from_101_200 is None:
-        return None
+        return 0
 
     from_today_100 = kis_api.get_chart_price(code, period=100, end_date=kds.latest_korea_stock_date())
     if from_today_100 is None:
-        return None
-
+        return 0
 
     from_today_200 = pd.concat([from_today_100, from_101_200], ignore_index=True)
     from_today_200['date'] = pd.to_datetime(from_today_200['date'], format='%Y%m%d')
@@ -113,3 +111,4 @@ def load_data_from_chart(code):
 
     else:
         df_stockfeatures.to_csv(f'./../data/stock/{update_date}/{code}.csv')
+

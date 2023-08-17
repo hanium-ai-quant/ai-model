@@ -82,8 +82,8 @@ def get_chart_price(code="005930", period=100, end_date="20201030"):
 
         # Check if all expected keys exist
         if not all(key in data for key in expected_keys):
-            print(f"Unexpected data format for item {i} in 'output2' of stock code {code}: {data}")
-            continue
+            print(f"No data for {i}th date in 'output2' of stock code {code}")
+            return None
 
         stck_bsop_date = data['stck_bsop_date']  # 날짜
         stck_oprc = int(data['stck_oprc'])  # 시가

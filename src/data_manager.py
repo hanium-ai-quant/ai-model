@@ -209,7 +209,10 @@ def save_market_features():
 def save_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
 
-    ksm.load_data_from_chart(code)
+    code_data_all_exist = ksm.load_data_from_chart(code)
+    if code_data_all_exist is 0:
+        return 0
+
     df_stockfeatures = pd.read_csv(f'./../data/stock/{update_date}/{code}.csv')
     df_stockfeatures['date'] = pd.to_datetime(df_stockfeatures['date'])
 
@@ -223,12 +226,13 @@ def save_data(code):
     df = df.fillna(0)
     if not os.path.exists(f'./../data/{update_date}/'):
         os.makedirs(f'./../data/{update_date}/')
-    df.to_csv(f'./../data/{update_date}/{code}.csv',index=False)
+    df.to_csv(f'./../data/{update_date}/{code}.csv', index=False)
 
 
 def load_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
     df = pd.read_csv(f'./../data/{update_date}/{code}.csv')
+
     training_data = df[COLUMNS_TRAINING_DATA].values
     scaler_path = os.path.join(f'./../data/{update_date}/', f'{code}_scaler.joblib')
     scaler = None
@@ -259,7 +263,9 @@ def data_from_sector(sector_code):
 def data_manager(code):
     update_date = datetime.now().strftime('%Y%m%d')
     if not os.path.exists(f'./../data/{update_date}/{code}.csv'):
-        save_data(code)
+        code_data_all_exist = save_data(code)
+        if code_data_all_exist is 0:
+            return None, None
         chart_data, training_data = load_data(code)
         return chart_data, training_data
     else:

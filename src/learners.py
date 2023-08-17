@@ -310,7 +310,7 @@ class ReinforcementLearner:
 
             # 에포크 관련 정보 가시화
             if self.gen_output:
-                if self.num_epoches == 1 or (epoch + 1) % max(int(self.num_epoches / 10), 1) == 0:
+                if self.num_epoches == 1 or (epoch + 1) % max(int(self.num_epoches / 5), 1) == 0:
                     self.visualize(epoch_str, self.num_epoches, epsilon)
 
             # 학습 관련 정보 갱신
