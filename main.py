@@ -3,7 +3,7 @@ import sys
 import logging
 import argparse
 import json
-from tqdm import tqdm
+from datetime import datetime
 
 import src
 
@@ -12,21 +12,20 @@ sys.path.append('./src/korea_data')
 sys.path.append('./src/korea_data/korea_stock_data')
 sys.path.append('./src/korea_data/korea_index_data')
 from src import settings
-from src import utils
 from src import data_manager
 
 if __name__ == '__main__':
     # 종목 코드 읽어옴
-    sector = 'G2020'
+    sector = 'G4050'
     code_list = src.data_manager.code_from_sector(sector)
     # Argument Parser 생성
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=['train', 'test', 'update', 'predict'], default='train')
-    parser.add_argument('--name', default=utils.get_time_str())
+    parser.add_argument('--name', default=datetime.now().strftime('%Y%m%d'))
     parser.add_argument('--stock_code', nargs='*', default=code_list)
     parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='a3c')
-    parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='lstm')
-    parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='dnn')
+    parser.add_argument('--lr', type=float, default=0.0005)
     parser.add_argument('--discount_factor', type=float, default=0.7)
     parser.add_argument('--balance', type=int, default=100000000)
     args = parser.parse_args()
@@ -35,8 +34,8 @@ if __name__ == '__main__':
     output_name = f'{sector}_{args.mode}_{args.name}_{args.rl_method}_{args.net}'
     learning = args.mode in ['train', 'update']
     reuse_models = args.mode in ['test', 'update', 'predict']
-    value_network_name = f'{args.name}_{args.rl_method}_{args.net}_value.mdl'
-    policy_network_name = f'{args.name}_{args.rl_method}_{args.net}_policy.mdl'
+    value_network_name = f'{sector}_{args.name}_{args.rl_method}_{args.net}_value.mdl'
+    policy_network_name = f'{sector}_{args.name}_{args.rl_method}_{args.net}_policy.mdl'
     start_epsilon = 1 if args.mode in ['train', 'update'] else 0
     num_epoches = 500 if args.mode in ['train', 'update'] else 1
     num_steps = 5 if args.net in ['lstm', 'cnn'] else 1
@@ -93,7 +92,7 @@ if __name__ == '__main__':
         assert len(chart_data) >= num_steps
 
         # 최소/최대 단일 매매 금액 설정
-        min_trading_price = 10000
+        min_trading_price = 100000
         max_trading_price = 10000000
 
         # 공통 파라미터 설정

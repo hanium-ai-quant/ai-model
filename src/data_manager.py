@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime
 import yaml
 import os
+
+from IPython.core.display_functions import display
 from sklearn.preprocessing import RobustScaler
 from joblib import dump, load
 
@@ -210,7 +212,7 @@ def save_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
 
     code_data_all_exist = ksm.load_data_from_chart(code)
-    if code_data_all_exist is 0:
+    if code_data_all_exist == 0:
         return 0
 
     df_stockfeatures = pd.read_csv(f'./../data/stock/{update_date}/{code}.csv')
@@ -232,19 +234,21 @@ def save_data(code):
 def load_data(code):
     update_date = datetime.now().strftime('%Y%m%d')
     df = pd.read_csv(f'./../data/{update_date}/{code}.csv')
-
-    training_data = df[COLUMNS_TRAINING_DATA].values
-    scaler_path = os.path.join(f'./../data/{update_date}/', f'{code}_scaler.joblib')
-    scaler = None
-    if not os.path.exists(scaler_path):
-        scaler = RobustScaler()
-        scaler.fit(training_data)
-        dump(scaler, scaler_path)
-    else:
-        scaler = load(scaler_path)
-    training_data = scaler.transform(training_data)
-
     chart_data = df[COLUMNS_CHART_DATA]
+    training_data = df[COLUMNS_TRAINING_DATA].values
+
+    from sklearn.preprocessing import StandardScaler, MaxAbsScaler
+    from joblib import dump, load
+    scaler_std = StandardScaler()
+    scaler_std.fit(training_data)
+    scaler_norm = MaxAbsScaler()
+    scaler_norm.fit(scaler_std.transform(training_data))
+    scaler_path = os.path.join(f'./../data/{update_date}', 'scaler.joblib')
+    if not os.path.exists(scaler_path):
+        dump(scaler_norm, scaler_path)
+    else:
+        scaler_norm = load(scaler_path)
+    training_data = scaler_norm.transform(training_data)
     return chart_data, training_data
 
 
@@ -264,7 +268,7 @@ def data_manager(code):
     update_date = datetime.now().strftime('%Y%m%d')
     if not os.path.exists(f'./../data/{update_date}/{code}.csv'):
         code_data_all_exist = save_data(code)
-        if code_data_all_exist is 0:
+        if code_data_all_exist == 0:
             return None, None
         chart_data, training_data = load_data(code)
         return chart_data, training_data
@@ -307,3 +311,6 @@ sector_code_list = [
     'G5020',
     'G5510',
 ]
+
+save_data('005930')
+load_data('005930')
