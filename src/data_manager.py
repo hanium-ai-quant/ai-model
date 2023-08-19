@@ -237,18 +237,20 @@ def load_data(code):
     chart_data = df[COLUMNS_CHART_DATA]
     training_data = df[COLUMNS_TRAINING_DATA].values
 
-    from sklearn.preprocessing import StandardScaler, MaxAbsScaler
+    from sklearn.preprocessing import RobustScaler
     from joblib import dump, load
-    scaler_std = StandardScaler()
-    scaler_std.fit(training_data)
-    scaler_norm = MaxAbsScaler()
-    scaler_norm.fit(scaler_std.transform(training_data))
+
     scaler_path = os.path.join(f'./../data/{update_date}', 'scaler.joblib')
+
     if not os.path.exists(scaler_path):
-        dump(scaler_norm, scaler_path)
+        scaler = RobustScaler()
+        scaler.fit(training_data)
+        dump(scaler, scaler_path)
+
     else:
-        scaler_norm = load(scaler_path)
-    training_data = scaler_norm.transform(training_data)
+        scaler = load(scaler_path)
+
+    training_data = scaler.transform(training_data)
     return chart_data, training_data
 
 
@@ -311,6 +313,3 @@ sector_code_list = [
     'G5020',
     'G5510',
 ]
-
-save_data('005930')
-load_data('005930')
