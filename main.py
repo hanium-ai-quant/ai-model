@@ -23,10 +23,10 @@ if __name__ == '__main__':
     parser.add_argument('--mode', choices=['train', 'test', 'update', 'predict'], default='train')
     parser.add_argument('--name', default=datetime.now().strftime('%Y%m%d'))
     parser.add_argument('--stock_code', nargs='*', default=code_list)
-    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='a3c')
+    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='dqn')
     parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='dnn')
     parser.add_argument('--lr', type=float, default=0.001)
-    parser.add_argument('--discount_factor', type=float, default=0.65)
+    parser.add_argument('--discount_factor', type=float, default=0.7)
     parser.add_argument('--balance', type=int, default=100000000)
     args = parser.parse_args()
 

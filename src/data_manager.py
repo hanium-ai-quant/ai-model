@@ -240,17 +240,16 @@ def load_data(code):
     from sklearn.preprocessing import RobustScaler
     from joblib import dump, load
 
-    scaler_path = os.path.join(f'./../data/{update_date}', 'scaler.joblib')
+    scaler_file = os.path.join(f'./../data/{update_date}', f'{code}_scaler.joblib')
 
-    if not os.path.exists(scaler_path):
-        scaler = RobustScaler()
-        scaler.fit(training_data)
-        dump(scaler, scaler_path)
-
+    if not os.path.exists(scaler_file):
+        scaler_std = RobustScaler()
+        scaler_std.fit(training_data)
+        dump(scaler_std, scaler_file)
     else:
-        scaler = load(scaler_path)
+        scaler_std = load(scaler_file)
 
-    training_data = scaler.transform(training_data)
+    training_data = scaler_std.transform(training_data)
     return chart_data, training_data
 
 
@@ -313,3 +312,4 @@ sector_code_list = [
     'G5020',
     'G5510',
 ]
+
