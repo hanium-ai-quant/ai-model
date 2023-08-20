@@ -23,9 +23,9 @@ if __name__ == '__main__':
     parser.add_argument('--mode', choices=['train', 'test', 'update', 'predict'], default='train')
     parser.add_argument('--name', default=datetime.now().strftime('%Y%m%d'))
     parser.add_argument('--stock_code', nargs='*', default=code_list)
-    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='dqn')
-    parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='dnn')
-    parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='a3c')
+    parser.add_argument('--net', choices=['dnn', 'lstm', 'cnn', 'monkey'], default='lstm')
+    parser.add_argument('--lr', type=float, default=0.0005)
     parser.add_argument('--discount_factor', type=float, default=0.7)
     parser.add_argument('--balance', type=int, default=100000000)
     args = parser.parse_args()
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     value_network_name = f'{sector}_{args.name}_{args.rl_method}_{args.net}_value.mdl'
     policy_network_name = f'{sector}_{args.name}_{args.rl_method}_{args.net}_policy.mdl'
     start_epsilon = 1 if args.mode in ['train', 'update'] else 0
-    num_epoches = 100 if args.mode in ['train', 'update'] else 1
+    num_epoches = 500 if args.mode in ['train', 'update'] else 1
     num_steps = 5 if args.net in ['lstm', 'cnn'] else 1
 
 
