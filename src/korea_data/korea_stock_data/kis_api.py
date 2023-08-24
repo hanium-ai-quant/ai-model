@@ -1,5 +1,7 @@
 import sys
 import os
+import time
+
 import pandas as pd
 import json
 import requests
@@ -20,6 +22,15 @@ with open('config_kis.yaml', encoding='UTF-8') as f:
     URL_BASE = _cfg['URL_BASE']
 
 
+def save_token(access_token, access_token_expired):
+    data = {
+        'ACCESS_TOKEN': access_token,
+        'ACCESS_TOKEN_EXPIRED': access_token_expired
+    }
+    with open('kis_token.json', 'w') as f:
+        json.dump(data, f)
+
+
 def auth():
     """인증"""
     headers = {"content-type": "application/json"}
@@ -33,7 +44,9 @@ def auth():
     res = requests.post(URL, headers=headers, data=json.dumps(body))
 
     ACCESS_TOKEN = res.json()["access_token"]
-    return ACCESS_TOKEN
+    ACCESS_TOKEN_EXPIRED = res.json()["access_token_token_expired"]
+
+    save_token(ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED)
 
 
 def hashkey(datas):
@@ -50,8 +63,25 @@ def hashkey(datas):
     return hashkey
 
 
+def get_access_token():
+    try:
+        with open('kis_token.json', 'r') as f:
+            data = json.load(f)
+            return data['ACCESS_TOKEN'], data['ACCESS_TOKEN_EXPIRED']
+    except FileNotFoundError:
+        auth()
+        with open('kis_token.json', 'r') as f:
+            data = json.load(f)
+            return data['ACCESS_TOKEN'], data['ACCESS_TOKEN_EXPIRED']
+
+
 def get_chart_price(code="005930", period=100, end_date="20201030"):
-    ACCESS_TOKEN = auth()
+    ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED = get_access_token()
+    if time.strftime('%Y-%m-%d %H:%M:%S') < ACCESS_TOKEN_EXPIRED:
+        ACCESS_TOKEN = ACCESS_TOKEN
+    else:
+        auth()
+        ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED = get_access_token()
     PATH = "uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
     URL = f"{URL_BASE}/{PATH}"
     headers = {"Content-Type": "application/json",
@@ -103,4 +133,3 @@ def get_chart_price(code="005930", period=100, end_date="20201030"):
             })
             df = df._append(temp_df, ignore_index=True)
     return df
-

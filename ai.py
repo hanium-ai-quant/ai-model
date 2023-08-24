@@ -15,12 +15,14 @@ from src import settings
 from src import data_manager
 
 
-def process(sector):
+def process(args):
+    # main.py에서 가져옴
+    sector, mode = args
     # 종목 코드 읽어옴
     code_list = src.data_manager.code_from_sector(sector)
     # Argument Parser 생성
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', choices=['train', 'test', 'update', 'predict'], default='train')
+    parser.add_argument('--mode', choices=['train', 'test', 'update', 'predict'])
     parser.add_argument('--name', default=datetime.now().strftime('%Y%m%d'))
     parser.add_argument('--stock_code', nargs='*', default=code_list)
     parser.add_argument('--rl_method', choices=['dqn', 'pg', 'ac', 'a2c', 'a3c', 'monkey'], default='a3c')
@@ -29,6 +31,8 @@ def process(sector):
     parser.add_argument('--discount_factor', type=float, default=0.7)
     parser.add_argument('--balance', type=int, default=100000000)
     args = parser.parse_args()
+    if args.mode is None:
+        args.mode = mode
 
     # 학습기 파라미터 설정
     output_name = f'{sector}_{args.mode}_{args.name}_{args.rl_method}_{args.net}'
