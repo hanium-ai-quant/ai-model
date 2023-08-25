@@ -277,34 +277,3 @@ def data_manager(code):
 def code_from_sector(sector_code):
     code_list = wics.get_code_from_sector(sector_code)
     return code_list
-
-
-sector_code_list = [
-    'G1010',
-    'G1510',
-    'G2010',
-    'G2020',
-    'G2030',
-    'G2510',
-    'G2520',
-    'G2530',
-    'G2550',
-    'G2560',
-    'G3010',
-    'G3020',
-    'G3030',
-    'G3510',
-    'G3520',
-    'G4010',
-    'G4020',
-    'G4030',
-    'G4040',
-    'G4050',
-    'G4510',
-    'G4520',
-    'G4530',
-    'G4540',
-    'G5010',
-    'G5020',
-    'G5510',
-]
