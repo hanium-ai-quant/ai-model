@@ -12,6 +12,7 @@ sys.path.append('./korea_data/korea_index_data/')
 from korea_data.korea_stock_data import wics
 from korea_data.korea_stock_data import korea_stock_manager as ksm
 from korea_data.korea_index_data import korea_index_manager as kim
+from label_manager import label_manager
 
 COLUMNS_CHART_DATA = [
     'date',
@@ -228,6 +229,7 @@ def save_data(code):
     if not os.path.exists(f'./../data/{update_date}/'):
         os.makedirs(f'./../data/{update_date}/')
     df.to_csv(f'./../data/{update_date}/{code}.csv', index=False)
+    label_manager(code)
 
 
 def load_data(code):

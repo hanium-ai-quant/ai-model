@@ -21,7 +21,7 @@ if __name__ == '__main__':
     sector_list = [
         'G2020',
     ]
-    mode = 'update'
+    mode = 'train'
 
     if mode == 'test' or mode == 'update':
 
