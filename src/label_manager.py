@@ -6,10 +6,10 @@ import os
 
 
 def label_manager(code):
-    stocks = os.listdir('./../../data/stock')
-    dates = [int(stock) for stock in stocks]
+    stocks = os.listdir('./../data/stock')
+    dates = [str(stock) for stock in stocks]
 
-    path = f'./../../data/stock/{max(dates)}'
+    path = f'./../data/stock/{max(dates)}'
     file_path = os.path.join(path, f'{code}.csv')
     df_feature = pd.read_csv(file_path, index_col=False, encoding='utf-8')
     peaks = []

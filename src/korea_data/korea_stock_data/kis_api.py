@@ -133,3 +133,33 @@ def get_chart_price(code="005930", period=100, end_date="20201030"):
             })
             df = df._append(temp_df, ignore_index=True)
     return df
+
+def get_current_price(code):
+    ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED = get_access_token()
+    if time.strftime('%Y-%m-%d %H:%M:%S') < ACCESS_TOKEN_EXPIRED:
+        ACCESS_TOKEN = ACCESS_TOKEN
+    else:
+        auth()
+        ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED = get_access_token()
+    PATH = "uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
+    URL = f"{URL_BASE}/{PATH}"
+    headers = {"Content-Type": "application/json",
+               "authorization": f"Bearer {ACCESS_TOKEN}",
+               "appKey": APP_KEY,
+               "appSecret": APP_SECRET,
+               "tr_id": "FHKST01010100"}
+    params = {
+        "fid_cond_mrkt_div_code": "J",
+        "fid_input_iscd": code
+    }
+
+    res = requests.get(URL, headers=headers, params=params)
+    json_data = res.json()
+
+    stck_prpr = json_data['output']['stck_prpr'] # 현재가
+    prdy_vrss = json_data['output']['prdy_vrss'] # 전일대비
+    prdy_ctrt = json_data['output']['prdy_ctrt'] # 전일대비율
+    stck_hgpr = json_data['output']['stck_hgpr'] # 고가
+    stck_lwpr = json_data['output']['stck_lwpr'] # 저가
+
+    return stck_prpr, prdy_vrss, prdy_ctrt, stck_hgpr, stck_lwpr

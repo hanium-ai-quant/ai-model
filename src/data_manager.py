@@ -5,6 +5,7 @@ import yaml
 import os
 from sklearn.preprocessing import StandardScaler
 from joblib import dump, load
+import numpy as np
 
 sys.path.append('./korea_data/korea_stock_data/')
 sys.path.append('./korea_data/korea_index_data/')
@@ -43,6 +44,7 @@ COLUMNS_TRAINING_DATA = [
     'volume_ma80_ratio',
     'close_ma100_ratio',
     'volume_ma100_ratio',
+    'trans_price_exp',
     'kospi_open_lastclose_ratio',
     'kospi_high_close_ratio',
     'kospi_low_close_ratio',
@@ -225,6 +227,7 @@ def save_data(code):
     df = pd.merge(df_stockfeatures, df_marketfeatures, on='date', how='inner')
     df = df.reset_index(drop=True)
     df.drop(columns=['Unnamed: 0_x', 'Unnamed: 0_y', 'Unnamed: 0'], errors='ignore', inplace=True)
+
     df = df.fillna(0)
     if not os.path.exists(f'./../data/{update_date}/'):
         os.makedirs(f'./../data/{update_date}/')
@@ -279,3 +282,5 @@ def data_manager(code):
 def code_from_sector(sector_code):
     code_list = wics.get_code_from_sector(sector_code)
     return code_list
+
+save_data('005930')
