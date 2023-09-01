@@ -106,7 +106,6 @@ def wics_to_db():
     args = sector.values.tolist()
     cursor.executemany(query, args)
     con.commit()
-
     con.close()
 
 
@@ -133,6 +132,5 @@ def get_code_from_sector(my_sector_code):
     # Use boolean indexing to filter the DataFrame and then get the 'CMP_CD' column
     cmp_cd_list = sector[sector['IDX_CD'] == specific_idx_cd]['CMP_CD'].tolist()
     return cmp_cd_list
-
 
 

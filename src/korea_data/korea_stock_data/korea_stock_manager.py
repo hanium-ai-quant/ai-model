@@ -68,6 +68,8 @@ def preprocess(data):
     except ZeroDivisionError:
         data['volume_lastvolume_ratio'] = 0
 
+    data['trans_price_exp'] = np.log10((1 + (data['open'].values + data['close'].values) / 2) * data['volume'].values)
+
     return data
 
 

@@ -41,4 +41,9 @@ def label_manager(code):
     df_feature.loc[:, 'peak_diffratio'] = (df_feature.loc[:, 'peak_close'] - df_feature.loc[:, 'close']) / df_feature.loc[:, 'close']
     df_feature = df_feature.drop(['peak_date', 'peak_close'], axis=1)
     file_path = os.path.join(path, f'{code}_labeled.csv')
+<<<<<<< HEAD
     df_feature.to_csv(file_path, index=False, encoding='utf-8')
+=======
+    df_feature.to_csv(file_path, index=False, encoding='utf-8')
+
+>>>>>>> origin/kimdaehwan
